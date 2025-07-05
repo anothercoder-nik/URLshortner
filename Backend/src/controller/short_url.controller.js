@@ -1,9 +1,10 @@
 import { getShortUrl } from "../dao/short_url.js";
 import { createShortUrlWithoutUser } from "../services/short_url.service.js";
 import shortUrlSchema from "../models/shorturl.model.js";
+import wrapAsync from "../utils/tryCatchWrapper.js";
 
 
-export const createShortUrlnow = async (req, res) => {
+export const createShortUrlnow = wrapAsync(async (req, res) => {
     const { url } = req.body
 
     const shortUrl = await createShortUrlWithoutUser(url)
@@ -11,9 +12,9 @@ export const createShortUrlnow = async (req, res) => {
     // shortUrl = await createShortUrlWithoutUser(data.url)
 
     res.status(200).json({ shortUrl: process.env.BASE_URL + shortUrl })
-}
+})
 
-export const redirectFromShortUrl = async (req,res)=>{
+export const redirectFromShortUrl = wrapAsync(async (req,res)=>{
     const { id } = req.params;
   console.log("Requested ID:", id);
 
@@ -35,4 +36,4 @@ export const redirectFromShortUrl = async (req,res)=>{
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
-}
+})

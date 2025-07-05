@@ -1,7 +1,8 @@
 import urlSchema from "../models/shorturl.model.js";
+import wrapAsync from "../utils/tryCatchWrapper.js";
 // import { ConflictError } from "../utils/errorHandler.js";
 
-export const saveShortUrl = async (shortUrl, longUrl, userId) => {
+export const saveShortUrl = wrapAsync(async (shortUrl, longUrl, userId) => {
 
         const newUrl = new urlSchema({
             fullUrl:longUrl,
@@ -11,8 +12,8 @@ export const saveShortUrl = async (shortUrl, longUrl, userId) => {
             newUrl.user = userId
         }
         await newUrl.save()
-};
+});
 
 export const getShortUrl = async (shortUrl) => {
-    return await urlSchema.findOneAndUpdate({short_url:shortUrl},{$inc:{clicks:1}});
+    return await urlSchema.findOneAndUpdate({shortUrl:shortUrl},{$inc:{clicks:1}});
 }
