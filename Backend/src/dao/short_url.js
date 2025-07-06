@@ -1,19 +1,29 @@
-import urlSchema from "../models/shorturl.model.js";
-import wrapAsync from "../utils/tryCatchWrapper.js";
-// import { ConflictError } from "../utils/errorHandler.js";
+import ShortUrl from "../models/shorturl.model.js";
+import { ConflictError } from "../utils/errorHandler.js";
 
-export const saveShortUrl = wrapAsync(async (shortUrl, longUrl, userId) => {
-
-        const newUrl = new urlSchema({
+export const saveShortUrl = async (shortUrl, longUrl, userId) => {
+    try{
+        const newUrl = new ShortUrl({
             fullUrl:longUrl,
             shortUrl:shortUrl
         })
         if(userId){
             newUrl.user = userId
         }
-        await newUrl.save()
-});
+        const savedUrl = await newUrl.save()
+        return savedUrl
+    }catch(err){
+        if(err.code == 11000){
+            throw new ConflictError("Short URL already exists")
+        }
+        throw new Error(err)
+    }
+};
 
 export const getShortUrl = async (shortUrl) => {
-    return await urlSchema.findOneAndUpdate({shortUrl:shortUrl},{$inc:{clicks:1}});
+    return await ShortUrl.findOneAndUpdate({shortUrl:shortUrl},{$inc:{clicks:1}});
+}
+
+export const getCustomShortUrl = async (slug) => {
+    return await ShortUrl.findOne({shortUrl:slug});
 }

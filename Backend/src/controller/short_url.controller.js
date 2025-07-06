@@ -1,25 +1,35 @@
 import { getShortUrl } from "../dao/short_url.js";
-import { createShortUrlWithoutUser } from "../services/short_url.service.js";
-import shortUrlSchema from "../models/shorturl.model.js";
+import { createShortUrlWithoutUser, createShortUrlWithUser } from "../services/short_url.service.js";
+import shortUrl from "../models/shorturl.model.js";
 import wrapAsync from "../utils/tryCatchWrapper.js";
 
 
-export const createShortUrlnow = wrapAsync(async (req, res) => {
-    const { url } = req.body
-
-    const shortUrl = await createShortUrlWithoutUser(url)
-
-    // shortUrl = await createShortUrlWithoutUser(data.url)
-
-    res.status(200).json({ shortUrl: process.env.BASE_URL + shortUrl })
+export const createShortUrl = wrapAsync(async (req, res) => {
+    const data = req.body
+    console.log("Create short URL request received:", data); 
+    let shortUrl
+    
+    if(req.user) {
+        shortUrl = await createShortUrlWithUser(data.url, req.user._id, data.slug || null)
+        console.log(shortUrl, "this is short url with user")
+    } else { 
+        shortUrl = await createShortUrlWithoutUser(data.url)
+         console.log(shortUrl, "this is short url without user")
+      }
+    
+    res.status(200).json({
+        success: true,
+        shortUrl: process.env.BASE_URL + shortUrl
+    })
 })
+
 
 export const redirectFromShortUrl = wrapAsync(async (req,res)=>{
     const { id } = req.params;
   console.log("Requested ID:", id);
 
   try {
-    const url = await shortUrlSchema.findOne({ shortUrl: id });
+    const url = await shortUrl.findOne({ shortUrl: id });
 
     if (url) {
       url.clicks++;
