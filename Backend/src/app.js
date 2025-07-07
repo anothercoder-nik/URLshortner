@@ -17,7 +17,10 @@ const app = express();
 const allowedOrigins = [
     "http://localhost:5173", // Development
     "https://url-shortener-frontend.onrender.com", // Render frontend (update with your actual URL)
-    process.env.FRONTEND_URL // Environment variable for frontend URL
+    process.env.FRONTEND_URL,
+    "capacitor://localhost", // For mobile apps using Capacitor
+    "ionic://localhost", // For Ionic apps
+    "null",// Environment variable for frontend URL
 ].filter(Boolean);
 
 app.use(cors({
