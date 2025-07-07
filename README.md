@@ -2,8 +2,6 @@
 
 A modern, full-stack URL shortening service built with the MERN stack (MongoDB, Express, React, Node.js).
 
-![URL Shortener Screenshot](https://via.placeholder.com/800x400?text=URL+Shortener+Screenshot)
-
 ## Features
 
 - ✂️ Shorten long URLs with a single click
