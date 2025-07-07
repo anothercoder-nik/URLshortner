@@ -2,6 +2,8 @@
 
 A modern, full-stack URL shortening service built with the MERN stack (MongoDB, Express, React, Node.js).
 
+![URL Shortener Screenshot](https://via.placeholder.com/800x400?text=URL+Shortener+Screenshot)
+
 ## Features
 
 - ✂️ Shorten long URLs with a single click
@@ -10,6 +12,31 @@ A modern, full-stack URL shortening service built with the MERN stack (MongoDB, 
 - 👤 User authentication system
 - 📱 Responsive design for desktop and mobile devices
 - 🔒 Secure API with JWT authentication
+
+## Architecture
+
+This project follows a clean, modular architecture that makes it production-ready:
+
+### Backend Architecture
+- **Controller-Service-DAO Pattern**: Separation of concerns with controllers handling requests, services containing business logic, and DAOs (Data Access Objects) for database operations
+- **Middleware-based Authentication**: JWT verification through middleware for protected routes
+- **Error Handling**: Centralized error handling with custom error classes
+- **Environment Configuration**: Externalized configuration using dotenv
+- **Model-View-Controller (MVC)**: Clear separation between data models, business logic, and API endpoints
+
+### Frontend Architecture
+- **Component-Based Structure**: Reusable UI components for maintainability
+- **State Management**: Centralized state with Redux Toolkit
+- **Data Fetching Layer**: Abstracted API calls with React Query
+- **Route Management**: Declarative routing with TanStack Router
+- **Responsive Design**: Mobile-first approach with Tailwind CSS
+
+This modular approach ensures:
+- 🔄 Easy maintenance and updates
+- 🔌 Scalability for additional features
+- 🧪 Testability of individual components
+- 🚀 Simplified deployment process
+- 👥 Collaborative development with clear boundaries
 
 ## Tech Stack
 
