@@ -6,18 +6,20 @@ const UserUrls = () => {
   const { data: urls, isLoading, isError, error } = useQuery({
     queryKey: ['userUrls'],
     queryFn: getAllUserUrls,
-    refetchInterval: 30000, // Refetch every 30 seconds to update click counts
-    staleTime: 0, // Consider data stale immediately so it refetches when invalidated
+    refetchInterval: 30000,
+    staleTime: 0,
   })
+
   const [copiedId, setCopiedId] = useState(null)
-  const handleCopy = (url, id) => {
-    navigator.clipboard.writeText(url)
-    setCopiedId(id)
-    
-    // Reset the copied state after 2 seconds
-    setTimeout(() => {
-      setCopiedId(null)
-    }, 2000)
+
+  const handleCopy = async (url, id) => {
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopiedId(id)
+      setTimeout(() => setCopiedId(null), 2000)
+    } catch (err) {
+      console.error('Failed to copy URL:', err)
+    }
   }
 
   if (isLoading) {
@@ -48,85 +50,78 @@ const UserUrls = () => {
     )
   }
 
-  // Debug the data structure
-  console.log('URL data structure:', urls.urls[0]);
+  console.log('URL data structure:', urls.urls[0])
 
   return (
     <div className="bg-white rounded-lg mt-5 shadow-md overflow-hidden">
-      
       <div className="overflow-x-auto h-56">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Original URL
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Short URL
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Clicks
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Original URL</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Short URL</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Clicks</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {urls.urls.reverse().map((url) => (
-              <tr key={url._id} className="hover:bg-gray-50">
-                <td className="px-6 py-4">
-                  <div className="text-sm text-gray-900 truncate max-w-xs">
-                    {url.fullUrl}
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="text-sm">
-                    <a 
-                      href={`https://urlshortner-backend-51qz.onrender.com/${url.shortUrl}`} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-900 hover:underline"
+            {[...urls.urls].reverse().map((url) => {
+              const shortUrl = `${import.meta.env.VITE_API_URL}/${url.shortUrl}`
+              return (
+                <tr key={url._id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4">
+                    <div className="text-sm text-gray-900 truncate max-w-xs" title={url.fullUrl}>
+                      {url.fullUrl}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="text-sm">
+                      <a
+                        href={shortUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-900 hover:underline"
+                      >
+                        {shortUrl}
+                      </a>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="text-sm text-gray-900">
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                        {url.clicks} {url.clicks === 1 ? 'click' : 'clicks'}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-sm font-medium">
+                    <button
+                      onClick={() => handleCopy(shortUrl, url._id)}
+                      className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm ${
+                        copiedId === url._id
+                          ? 'bg-green-600 text-white hover:bg-green-700'
+                          : 'bg-blue-600 text-white hover:bg-blue-700'
+                      } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200`}
                     >
-                      {`https://urlshortner-backend-51qz.onrender.com/${url.shortUrl}`}
-                    </a>
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="text-sm text-gray-900">
-                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                      {url.clicks} {url.clicks === 1 ? 'click' : 'clicks'}
-                    </span>
-                  </div>
-                </td>
-                <td className="px-6 py-4 text-sm font-medium">
-                  <button
-                    onClick={() => handleCopy(`https://urlshortner-backend-51qz.onrender.com/${url.shortUrl}`, url._id)}
-                    className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm ${
-                      copiedId === url._id
-                        ? 'bg-green-600 text-white hover:bg-green-700'
-                        : 'bg-blue-600 text-white hover:bg-blue-700'
-                    } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200`}
-                  >
-                    {copiedId === url._id ? (
-                      <>
-                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        Copied!
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
-                        </svg>
-                        Copy URL
-                      </>
-                    )}
-                  </button>
-                </td>
-              </tr>
-            ))}
+                      {copiedId === url._id ? (
+                        <>
+                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                          </svg>
+                          Copied!
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                          </svg>
+                          Copy URL
+                        </>
+                      )}
+                    </button>
+                  </td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       </div>
