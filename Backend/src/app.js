@@ -16,7 +16,7 @@ const app = express();
 // CORS configuration for production
 const allowedOrigins = [
     "http://localhost:5173", // Development
-    "https://your-frontend-domain.vercel.app", // Replace with your actual frontend URL
+    "https://url-shortener-frontend.onrender.com", // Render frontend (update with your actual URL)
     process.env.FRONTEND_URL // Environment variable for frontend URL
 ].filter(Boolean);
 
