@@ -8,10 +8,17 @@ import cors from 'cors';
 import authRoutes from './routers/auth.router.js';
 import cookieParser from 'cookie-parser';
 import { attachuser } from './utils/attachuser.js';
+import user_routes from './routers/user.route.js';
+import short_url from './routers/short_url.router.js';
 
 dotenv.config();
 const app = express();
-app.use(cors());
+app.use(cors(
+    {
+        origin: "http://localhost:5173",
+        credentials: true,
+    }
+));
 app.use(cookieParser());
 
 app.use(express.json());
@@ -21,11 +28,10 @@ app.use(attachuser)
 connectDB();
 
 // Create a new short URL
-app.use('/api/create', shortUrlRouter);
-app.use('/api/auth',authRoutes);
-
-// Redirect based on short URL
-app.get("/:id", redirectFromShortUrl);
+app.use("/api/user",user_routes)
+app.use("/api/auth",authRoutes)
+app.use("/api/create",short_url)
+app.get("/:id",redirectFromShortUrl)
 
 app.use(errorHandler);
 
