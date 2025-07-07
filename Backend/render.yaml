@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: url-shortener-backend
+    env: node
+    buildCommand: cd src && npm install
+    startCommand: cd src && npm start
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGO_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: BASE_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false

@@ -1,25 +1,34 @@
 {
-  "name": "src",
+  "name": "url-shortener-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "URL Shortener Backend API",
   "main": "app.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "build" : "npm install"
   },
-  "keywords": [],
+  "keywords": ["url-shortener", "api", "nodejs", "express"],
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cookie": "^1.0.2",
     "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
     "dotenv": "^17.0.1",
+    "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.17.0",
     "mongoose": "^8.16.1",
     "nanoid": "^5.1.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }
