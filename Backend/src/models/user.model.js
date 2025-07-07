@@ -2,28 +2,25 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: [true, "Name is required"],
-        trim: true
-    },
-    email: {
-        type: String,
-        required: [true, "Email is required"],
-        unique: true,
-        trim: true,
-        lowercase: true
-    },
-    password: {
-        type: String,
-        required: [true, "Password is required"],
-        select : false
-    }
-}, { timestamps: true });
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+    select: false,
+  },
+  avatar: {
+    type: String,
+    required: false,
+    default: "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp",
+  },
 });
 
 userSchema.methods.comparePassword = async function (password) {
@@ -38,7 +35,11 @@ userSchema.set('toJSON', {
   }
 });
 
-
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
 
 const User = mongoose.model("User", userSchema);
 

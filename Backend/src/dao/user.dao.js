@@ -3,7 +3,7 @@ import UrlModel from "../models/shorturl.model.js";
 
 export const findUserByEmail = async (email) => {
   try {
-    return await User.findOne({ email: email.toLowerCase() });
+    return await User.findOne({ email});
   } catch (error) {
     console.error("Error finding user by email:", error);
     throw error;
