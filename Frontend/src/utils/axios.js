@@ -1,13 +1,11 @@
 import axios from 'axios';
 
-// Fallback if VITE_API_URL is not defined
-const baseURL = import.meta.env.API_URL;
-
 const axiosInstance = axios.create({
-    baseURL,
+    baseURL: import.meta.env.VITE_API_URL || "https://clipli.sbs",
     timeout: 10000,
-    withCredentials: true,
-});
+    withCredentials: true
+})
+
 
 // Response interceptor
 axiosInstance.interceptors.response.use(
