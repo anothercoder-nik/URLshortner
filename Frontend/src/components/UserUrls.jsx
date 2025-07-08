@@ -66,7 +66,7 @@ const UserUrls = () => {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {[...urls.urls].reverse().map((url) => {
-              const shortUrl = `${import.meta.env.VITE_API_URL}/${url.shortUrl}`
+              const shortUrl = `${import.meta.env.VITE_API_URL}${url.shortUrl}`
               return (
                 <tr key={url._id} className="hover:bg-gray-50">
                   <td className="px-6 py-4">
