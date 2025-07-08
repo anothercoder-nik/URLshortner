@@ -16,7 +16,8 @@ const app = express();
 // CORS configuration for production
 const allowedOrigins = [
     "http://localhost:5173", // Development
-    "https://clipli.onrender.com", // Your frontend URL
+    "https://clipli.onrender.com",
+    "https://app.clipli.sbs",// Your frontend URL
     process.env.FRONTEND_URL // Environment variable for frontend URL
 ].filter(Boolean);
 
