@@ -1,4 +1,7 @@
-# URL Shortener
+# URL Shortener  
+Live Link-
+## app.clipli.sbs
+(Note: After first request, retry again to get backend active)
 
 A modern, full-stack URL shortening service built with the MERN stack (MongoDB, Express, React, Node.js).
 
