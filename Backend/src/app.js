@@ -13,58 +13,67 @@ import short_url from './routers/short_url.router.js';
 dotenv.config();
 const app = express();
 
-// CORS configuration for production
+// CORS configuration
 const allowedOrigins = [
-    "http://localhost:5173", // Development
+    "http://localhost:5173",
     "https://clipli.onrender.com",
-    "https://app.clipli.sbs",// Your frontend URL
-    process.env.FRONTEND_URL // Environment variable for frontend URL
+    "https://app.clipli.sbs",
+    process.env.FRONTEND_URL
 ].filter(Boolean);
 
-app.use(cors({
+const corsOptions = {
     origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
+        // Allow requests with no origin (like curl or mobile apps)
         if (!origin) return callback(null, true);
 
-        if (allowedOrigins.indexOf(origin) !== -1) {
+        if (allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
         }
     },
     credentials: true,
-}));
-app.use(cookieParser());
+};
 
+// ✅ Set CORS middleware first
+app.use(cors(corsOptions));
+
+// ✅ Handle preflight OPTIONS requests globally
+app.options('*', cors(corsOptions));
+
+// Cookie and body parsing
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(attachuser)
+
+// Attach user (should be after CORS & body parsing)
+app.use(attachuser);
+
 // Connect to DB before handling routes
 connectDB();
 
-// Health check endpoint
+// Health check
 app.get('/health', (_req, res) => {
-  res.status(200).json({
-    status: 'OK',
-    message: 'Server is running',
-    timestamp: new Date().toISOString()
-  });
+    res.status(200).json({
+        status: 'OK',
+        message: 'Server is running',
+        timestamp: new Date().toISOString()
+    });
 });
 
 // API routes
-app.use("/api/user",user_routes)
-app.use("/api/auth",authRoutes)
-app.use("/api/create",short_url)
+app.use("/api/user", user_routes);
+app.use("/api/auth", authRoutes);
+app.use("/api/create", short_url);
 
-// Short URL redirect (should be last to avoid conflicts)
-app.get("/:id",redirectFromShortUrl)
+// Short URL redirect (should be last route)
+app.get("/:id", redirectFromShortUrl);
 
+// Global error handler
 app.use(errorHandler);
 
-
-// Use PORT from environment variable or default to 3000
+// Start server
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+    console.log(`🚀 Server is running on port ${PORT}`);
 });
