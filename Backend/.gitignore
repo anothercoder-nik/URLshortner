@@ -1,0 +1,10 @@
+.env
+.env.*
+
+# Ignore QR codes 
+*.png
+
+# Ignore node modules 
+node_modules/
+
+src/node_modules/
