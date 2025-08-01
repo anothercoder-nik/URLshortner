@@ -93,7 +93,7 @@ const Navbar = () => {
             ) : (
               <>
                 {/* Only show login button on home page */}
-                {currentPath === '/' && (
+                { !isAuthenticated && (
                   <Link
                     to="/auth"
                     className="bg-white text-indigo-600 hover:bg-indigo-50 px-4 py-2 rounded-md text-sm font-medium transition duration-300 shadow-sm flex items-center"
@@ -135,7 +135,7 @@ const Navbar = () => {
             </div>
           ) : (
             <>
-              {currentPath === '/' && (
+              {!isAuthenticated && (
                 <Link
                   to="/auth"
                   className="bg-white text-indigo-600 hover:bg-indigo-50 px-4 py-2 rounded-md text-sm font-medium transition duration-300 shadow-sm flex items-center justify-center"
