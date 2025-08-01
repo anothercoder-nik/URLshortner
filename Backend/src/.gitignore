@@ -1,4 +1,4 @@
 .env
 node_modulesBackend/src/.env
-
+node_modules/
 node_modulesBackend
