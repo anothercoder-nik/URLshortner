@@ -10,7 +10,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { isAuthenticated, user, isGuest } = useSelector((state) => state.auth);
   const currentPath = router.state.location.pathname;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -72,7 +72,14 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-4">
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
-                <span className="text-white">Welcome, {user?.name || 'User'}</span>
+                <div className="flex items-center space-x-2">
+                  <span className="text-white">Welcome, {user?.name || 'User'}</span>
+                  {isGuest && (
+                    <span className="bg-yellow-500 text-yellow-900 px-2 py-1 rounded-full text-xs font-medium">
+                      Guest
+                    </span>
+                  )}
+                </div>
                 <Link
                   to="/dashboard"
                   className={`px-4 py-2 rounded-md text-sm font-medium transition duration-300 shadow-sm ${
@@ -87,7 +94,7 @@ const Navbar = () => {
                   onClick={handleLogout}
                   className="cursor-pointer bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300 shadow-sm"
                 >
-                  Logout
+                  {isGuest ? 'Exit Guest Mode' : 'Logout'}
                 </button>
               </div>
             ) : (
@@ -115,7 +122,14 @@ const Navbar = () => {
         <div className="md:hidden bg-indigo-800 shadow-inner py-3 px-4">
           {isAuthenticated ? (
             <div className="flex flex-col space-y-3">
-              <span className="text-white text-sm">Welcome, {user?.name || 'User'}</span>
+              <div className="flex items-center justify-between">
+                <span className="text-white text-sm">Welcome, {user?.name || 'User'}</span>
+                {isGuest && (
+                  <span className="bg-yellow-500 text-yellow-900 px-2 py-1 rounded-full text-xs font-medium">
+                    Guest
+                  </span>
+                )}
+              </div>
               <Link
                 to="/dashboard"
                 className={`px-4 py-2 rounded-md text-sm font-medium transition duration-300 shadow-sm text-center ${
@@ -130,7 +144,7 @@ const Navbar = () => {
                 onClick={handleLogout}
                 className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300 shadow-sm"
               >
-                Logout
+                {isGuest ? 'Exit Guest Mode' : 'Logout'}
               </button>
             </div>
           ) : (

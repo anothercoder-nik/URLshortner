@@ -6,9 +6,13 @@ export const loginUser = async (email, password) => {
     return data
 }
 
+export const guestLogin = async () => {
+    const {data} = await axiosInstance.post("/api/auth/guest-login")
+    return data
+}
+
 export const registerUser = async (name, password, email) => {
-    console.log(name,email,password);
-    const {data} = await axiosInstance.post("/api/auth/register",{name,email,password})
+    const {data} = await axiosInstance.post("/api/auth/register",{name,password,email})
     return data
 }
 export const logoutUser = async () => {

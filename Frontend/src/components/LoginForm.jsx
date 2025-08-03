@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { loginUser } from '../api/user.api';
+import { loginUser, guestLogin } from '../api/user.api';
 import {useDispatch, useSelector} from 'react-redux';
-import { login } from '../store/slice/authslice.js';
+import { login, guestLogin as guestLoginAction } from '../store/slice/authslice.js';
 import { useNavigate } from '@tanstack/react-router';
 
 const LoginForm = ({ state }) => {
     const [email, setEmail] = useState('papa1@gmail.com');
     const [password, setPassword] = useState('papa');
     const [loading, setLoading] = useState(false);
+    const [guestLoading, setGuestLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -27,6 +28,22 @@ const LoginForm = ({ state }) => {
         } catch (err) {
             setLoading(false);
             setError(err.message || 'Login failed. Please check your credentials.');
+        }
+    };
+
+    const handleGuestLogin = async () => {
+        setGuestLoading(true);
+        setError('');
+
+        try {
+            const data = await guestLogin();
+            dispatch(guestLoginAction(data.user))
+            navigate({to:"/dashboard"})
+            setGuestLoading(false);
+            console.log("guest login success")
+        } catch (err) {
+            setGuestLoading(false);
+            setError(err.message || 'Guest login failed. Please try again.');
         }
     };
 
@@ -71,7 +88,7 @@ const LoginForm = ({ state }) => {
                     />
                 </div>
 
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col space-y-3">
                     <button
                         className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                         type="submit"
@@ -79,6 +96,24 @@ const LoginForm = ({ state }) => {
                         disabled={loading}
                     >
                         {loading ? 'Signing in...' : 'Sign In'}
+                    </button>
+                    
+                    <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                            <div className="w-full border-t border-gray-300"></div>
+                        </div>
+                        <div className="relative flex justify-center text-sm">
+                            <span className="px-2 bg-white text-gray-500">or</span>
+                        </div>
+                    </div>
+
+                    <button
+                        className={`bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full ${guestLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        type="button"
+                        onClick={handleGuestLogin}
+                        disabled={guestLoading}
+                    >
+                        {guestLoading ? 'Signing in as Guest...' : 'Continue as Guest'}
                     </button>
                 </div>
 
